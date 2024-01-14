@@ -36,5 +36,29 @@ namespace NoteTakingApp.Controllers
 
             return Ok(note);
         }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateNote([FromRoute] Guid id, UpdateNote updateNote)
+        {
+            var note = await dbContext.Notes.FindAsync(id);
+            if (note == null) return NotFound();
+
+            note.Body = updateNote.Body;
+            await dbContext.SaveChangesAsync();
+            return Ok(note);
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteNoteById([FromRoute] Guid id)
+        {
+            var note = await dbContext.Notes.FindAsync(id);
+            if (note == null) return NotFound();
+
+            dbContext.Notes.Remove(note);
+            await dbContext.SaveChangesAsync();
+            return Ok(note);
+        }
     }
 }
